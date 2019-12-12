@@ -22,6 +22,11 @@ public class RequestUtils {
 		return this;
 	}
 	
+	public RequestUtils addCustomProperty(String propertyName, String propertyValue) {
+		this.requestMap.put(propertyName, propertyValue);
+		return this;
+	}
+	
 	public RequestUtils addMessage(String message) {
 		this.requestMap.put("message", message);
 		return message.startsWith("Error:") ? isSuccess(ERROR) : isSuccess(SUCCESS);

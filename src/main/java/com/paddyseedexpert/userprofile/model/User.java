@@ -1,25 +1,28 @@
 package com.paddyseedexpert.userprofile.model;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "TEST_USER")
+@Table(name = "TEST_USER", uniqueConstraints = { @UniqueConstraint(columnNames = "USER_NAME", name="UQ_TEST_USER_USER_NAME"), @UniqueConstraint(columnNames = "EMAIL_ADDRESS", name = "UQ_TEST_USER_EMAIL_ADDRESS") })
 public class User {
 
+	@Id
 	@GeneratedValue(generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy="uuid2")
+	@GenericGenerator(name = "uuid2", strategy="org.hibernate.id.UUIDGenerator")
 	@Column(name = "ID")
 	@Type(type = "uuid-char")
-	private String id;
+	private UUID id;
 	
-	@Id
 	@Column(name = "USER_NAME")
 	private String userName;
 	
@@ -37,43 +40,59 @@ public class User {
 	
 	@Column(name = "CONFIRM_PASSWORD")
 	private String confirmPassword;
-	
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
-	
+
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
+
 	public String getEmailAddress() {
 		return emailAddress;
 	}
-	
+
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
+
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
+
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+
 	public String getAddress() {
 		return address;
 	}
+
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	public String getConfirmPassword() {
 		return confirmPassword;
 	}
+
 	public void setConfirmPassword(String confirmPassword) {
 		this.confirmPassword = confirmPassword;
 	}
@@ -150,5 +169,6 @@ public class User {
 				+ emailAddress + ", phoneNumber=" + phoneNumber + ", address="
 				+ address + ", password=" + password + ", confirmPassword="
 				+ confirmPassword + "]";
-	}	
+	}
+	
 }
