@@ -1,6 +1,7 @@
 package com.paddyseedexpert.userprofile.service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.paddyseedexpert.userprofile.exception.AlreadyRegisteredException;
+import com.paddyseedexpert.userprofile.exception.AuthenticationFailureException;
 import com.paddyseedexpert.userprofile.exception.InvalidAccessTokenException;
 import com.paddyseedexpert.userprofile.exception.InvalidRequestParamException;
 import com.paddyseedexpert.userprofile.exception.MissingRequestParamException;
@@ -23,6 +25,8 @@ import static com.paddyseedexpert.userprofile.constant.AppConstants.CREATE_ACCES
 import static com.paddyseedexpert.userprofile.constant.AppConstants.UPDATE_ACCESS_TOKEN;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.FETCH_ACCESS_TOKEN;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.DELETE_ACCESS_TOKEN;
+import static com.paddyseedexpert.userprofile.constant.AppConstants.CHECK_ACCESS_TOKEN;
+import static com.paddyseedexpert.userprofile.constant.AppConstants.AUTH_ACCESS_TOKEN;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -132,7 +136,7 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidAccessTokenException("Invalid delete access token entered");
 		}
 		
-		if(userName == null || emailAddress == null) {
+		if(userName == null && emailAddress == null) {
 			throw new MissingRequestParamException("Username (or) Email address missing in request parameter for delete operation");
 		}
 		
@@ -167,6 +171,73 @@ public class UserServiceImpl implements UserService {
 		userRepository.delete(user);
 		
 		return id;
+	}
+
+	@Override
+	public String checkUser(User user, String accessToken) throws RuntimeException {
+		
+		String userName = user.getUserName();
+		String password = user.getPassword();
+		
+		if(accessToken==null) {
+			throw new InvalidAccessTokenException("Check access token missing in request header");
+		}
+		
+		if(accessToken != null && !accessToken.equals(CHECK_ACCESS_TOKEN)) {
+			throw new InvalidAccessTokenException("Invalid check access token entered");
+		}
+		
+		if(userName == null || password == null) {
+			throw new MissingRequestParamException("Username (or) Password missing in request parameter for check operation");
+		}
+		
+		if(DataUtils.isBlank(userName) || DataUtils.isBlank(password)) {
+			throw new InvalidRequestParamException("Username (or) Password request parameter specfied is blank (or) has only whitespace");
+		}
+		
+		Optional<User> optionalUser = userRepository.findByUserName(userName);
+		
+		if(optionalUser.isPresent()){
+			User fetchedUser = optionalUser.get();
+			if(fetchedUser.getPassword().equals(user.getPassword())){
+				return fetchedUser.getId().toString();
+			}else{
+				throw new AuthenticationFailureException("Username (or) Password specified is invalid");
+			}
+		}else{
+			throw new AuthenticationFailureException("Username (or) Password specified is invalid");
+		}
+	}
+
+	@Override
+	public String authenticateUser(User user, String accessToken) throws RuntimeException, JsonProcessingException {
+		
+		UUID id = user.getId();
+		
+		if(accessToken==null) {
+			throw new InvalidAccessTokenException("Auth access token missing in request header");
+		}
+		
+		if(accessToken != null && !accessToken.equals(AUTH_ACCESS_TOKEN)) {
+			throw new InvalidAccessTokenException("Invalid auth access token entered");
+		}
+		
+		if(id == null) {
+			throw new MissingRequestParamException("Id missing in request parameter for get operation");
+		}
+		
+		if(DataUtils.isBlank(id.toString())) {
+			throw new InvalidRequestParamException("Id request parameter specfied is blank (or) has only whitespace");
+		}
+		
+		Optional<User> optionalUser = userRepository.findById(id);
+		
+		if(optionalUser.isPresent()){
+			return DataUtils.getJSONString(optionalUser.get());
+		}else{
+			throw new UserNotExistException("Couldn't fetch user with id, "+id.toString()); 
+		}
+		
 	}
 
 }

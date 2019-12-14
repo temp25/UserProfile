@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.paddyseedexpert.userprofile.exception.AlreadyRegisteredException;
+import com.paddyseedexpert.userprofile.exception.AuthenticationFailureException;
 import com.paddyseedexpert.userprofile.exception.InvalidAccessTokenException;
 import com.paddyseedexpert.userprofile.exception.InvalidRequestParamException;
 import com.paddyseedexpert.userprofile.exception.MissingRequestParamException;
@@ -94,6 +95,34 @@ public class UserProfileController {
 			LOGGER.error("Error in deleting user. Error: "+e.getMessage(), e);
 		}
 		return getRequest().addMessage(message).build();
+	}
+	
+	@RequestMapping(value = "/check", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> checkUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+		String message = "";
+		try {
+			message = userService.checkUser(user, accessToken);
+			LOGGER.info(message);
+		}catch(InvalidAccessTokenException | MissingRequestParamException | InvalidRequestParamException | AuthenticationFailureException e) {
+			message = "Error: "+e.getMessage();
+			LOGGER.error("Error in checking user availability. Error: "+e.getMessage(), e);
+		}
+		return getRequest().addMessage(message).build();
+	}
+	
+	@RequestMapping(value = "/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> authenticateUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+		String message = "";
+		try {
+			String userJson = userService.authenticateUser(user, accessToken);
+			message = "User with id, "+user.getId()+" fetched successfully";
+			LOGGER.info(message);
+			return getRequest().addMessage(message).addCustomProperty("user", userJson).build();
+		}catch(InvalidAccessTokenException | MissingRequestParamException | UserNotExistException | JsonProcessingException e) {
+			message = "Error: "+e.getMessage();
+			LOGGER.error("Error in fetching user with id, "+user.getId()+". Error: "+e.getMessage(), e);
+			return getRequest().addMessage(message).build();
+		}
 	}
 
 	private RequestUtils getRequest() {

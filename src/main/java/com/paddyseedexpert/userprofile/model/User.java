@@ -1,5 +1,6 @@
 package com.paddyseedexpert.userprofile.model;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -7,10 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "USER_PROFILE", uniqueConstraints = { @UniqueConstraint(columnNames = "USER_NAME", name="UQ_USER_PROFILE_USER_NAME"), @UniqueConstraint(columnNames = "EMAIL_ADDRESS", name = "UQ_USER_PROFILE_EMAIL_ADDRESS") })
@@ -40,6 +45,16 @@ public class User {
 	
 	@Column(name = "CONFIRM_PASSWORD")
 	private String confirmPassword;
+	
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CREATED_TIMESTAMP")
+	private Date createdTimestamp;
+	
+	@UpdateTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "LAST_UPDATED_TIMESTAMP")
+	private Date lastUpdatedTimestamp;
 
 	public UUID getId() {
 		return id;
