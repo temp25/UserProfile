@@ -1,1 +1,1 @@
-web: chmod +x gradlew && ./gradlew clean build bootJar && java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/com.paddyseedexpert-1.0.0-SNAPSHOT.jar
+web: chmod +x gradlew && ./gradlew bootJar && java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/userprofile-1.0.0-SNAPSHOT.jar
