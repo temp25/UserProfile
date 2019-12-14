@@ -13,6 +13,10 @@ public class DataUtils {
 		return mapper.writeValueAsString(users);
 	}
 
+	public static boolean isBlank(String str) {
+		return str.trim().isEmpty();
+	}
+
 	
 
 }

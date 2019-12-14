@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.paddyseedexpert.userprofile.exception.AlreadyRegisteredException;
 import com.paddyseedexpert.userprofile.exception.InvalidAccessTokenException;
+import com.paddyseedexpert.userprofile.exception.InvalidRequestParamException;
+import com.paddyseedexpert.userprofile.exception.MissingRequestParamException;
 import com.paddyseedexpert.userprofile.exception.PasswordMismatchException;
 import com.paddyseedexpert.userprofile.exception.UserExistException;
 import com.paddyseedexpert.userprofile.exception.UserNotExistException;
@@ -77,8 +79,21 @@ public class UserProfileController {
 			LOGGER.error("Error in fetching users. Error: "+e.getMessage(), e);
 			return getRequest().addMessage(users).build();
 		}
-		
-		
+			
+	}
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> deleteUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+		String message = "";
+		try {
+			String userId = userService.deleteUser(user, accessToken);
+			message = "User with id, "+userId+" deleted successfully";
+			LOGGER.info(message);
+		}catch(InvalidAccessTokenException | MissingRequestParamException | InvalidRequestParamException | UserNotExistException e) {
+			message = "Error: "+e.getMessage();
+			LOGGER.error("Error in deleting user. Error: "+e.getMessage(), e);
+		}
+		return getRequest().addMessage(message).build();
 	}
 
 	private RequestUtils getRequest() {

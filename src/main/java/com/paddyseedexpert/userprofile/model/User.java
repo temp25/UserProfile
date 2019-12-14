@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "TEST_USER", uniqueConstraints = { @UniqueConstraint(columnNames = "USER_NAME", name="UQ_TEST_USER_USER_NAME"), @UniqueConstraint(columnNames = "EMAIL_ADDRESS", name = "UQ_TEST_USER_EMAIL_ADDRESS") })
+@Table(name = "USER_PROFILE", uniqueConstraints = { @UniqueConstraint(columnNames = "USER_NAME", name="UQ_USER_PROFILE_USER_NAME"), @UniqueConstraint(columnNames = "EMAIL_ADDRESS", name = "UQ_USER_PROFILE_EMAIL_ADDRESS") })
 public class User {
 
 	@Id
