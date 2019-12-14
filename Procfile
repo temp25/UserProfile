@@ -1,1 +1,1 @@
-web: chmod +x gradlew && ./gradlew clean build bootJar && java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/com.paddyseedexpert-1.0.0-SNAPSHOT.jar
+web: chmod +x gradlew && ./gradlew clean build bootJar && java -Dserver.port=$PORT -Xmx128m -Xss128k -XX:CICompilerCount=2 -jar build/libs/com.paddyseedexpert-1.0.0-SNAPSHOT.jar
