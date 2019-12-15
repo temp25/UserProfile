@@ -25,7 +25,6 @@ import static com.paddyseedexpert.userprofile.constant.AppConstants.CREATE_ACCES
 import static com.paddyseedexpert.userprofile.constant.AppConstants.UPDATE_ACCESS_TOKEN;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.FETCH_ACCESS_TOKEN;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.DELETE_ACCESS_TOKEN;
-import static com.paddyseedexpert.userprofile.constant.AppConstants.CHECK_ACCESS_TOKEN;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.AUTH_ACCESS_TOKEN;
 
 @Service
@@ -174,7 +173,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String checkUser(User user, String accessToken) throws RuntimeException {
+	public String authenticateUser(User user, String accessToken) throws RuntimeException {
 		
 		String userName = user.getUserName();
 		String password = user.getPassword();
@@ -183,7 +182,7 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidAccessTokenException("Check access token missing in request header");
 		}
 		
-		if(accessToken != null && !accessToken.equals(CHECK_ACCESS_TOKEN)) {
+		if(accessToken != null && !accessToken.equals(AUTH_ACCESS_TOKEN)) {
 			throw new InvalidAccessTokenException("Invalid check access token entered");
 		}
 		
@@ -210,7 +209,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String authenticateUser(User user, String accessToken) throws RuntimeException, JsonProcessingException {
+	public String getUser(User user, String accessToken) throws RuntimeException, JsonProcessingException {
 		
 		UUID id = user.getId();
 		
@@ -218,7 +217,7 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidAccessTokenException("Auth access token missing in request header");
 		}
 		
-		if(accessToken != null && !accessToken.equals(AUTH_ACCESS_TOKEN)) {
+		if(accessToken != null && !accessToken.equals(FETCH_ACCESS_TOKEN)) {
 			throw new InvalidAccessTokenException("Invalid auth access token entered");
 		}
 		
