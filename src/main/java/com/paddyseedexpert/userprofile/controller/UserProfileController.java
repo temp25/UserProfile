@@ -13,14 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.paddyseedexpert.userprofile.exception.AlreadyRegisteredException;
-import com.paddyseedexpert.userprofile.exception.AuthenticationFailureException;
-import com.paddyseedexpert.userprofile.exception.InvalidAccessTokenException;
-import com.paddyseedexpert.userprofile.exception.InvalidRequestParamException;
-import com.paddyseedexpert.userprofile.exception.MissingRequestParamException;
-import com.paddyseedexpert.userprofile.exception.PasswordMismatchException;
-import com.paddyseedexpert.userprofile.exception.UserExistException;
-import com.paddyseedexpert.userprofile.exception.UserNotExistException;
 import com.paddyseedexpert.userprofile.model.User;
 import com.paddyseedexpert.userprofile.service.UserService;
 import com.paddyseedexpert.utils.RequestUtils;
@@ -46,7 +38,7 @@ public class UserProfileController {
 			String userId = userService.createUser(user, accessToken);
 			message = "User created with id, "+userId;
 			LOGGER.info(message);
-		}catch(PasswordMismatchException |AlreadyRegisteredException | UserExistException | InvalidAccessTokenException e){
+		}catch(RuntimeException e){
 			message = "Error: "+e.getMessage();
 			LOGGER.error("Error in saving user. Error: "+e.getMessage(), e);
 		}
@@ -60,7 +52,7 @@ public class UserProfileController {
 			String userId = userService.updateUser(user, accessToken);
 			message = "User with id, "+userId+" updated successfully";
 			LOGGER.info(message);
-		}catch(UserNotExistException | PasswordMismatchException | InvalidAccessTokenException e) {
+		}catch(RuntimeException e) {
 			message = "Error: "+e.getMessage();
 			LOGGER.error("Error in updating user. Error: "+e.getMessage(), e);
 		}
@@ -75,7 +67,7 @@ public class UserProfileController {
 			users = userService.fetchUsers(accessToken);
 			LOGGER.info("Users fetched successfully");
 			return getRequest().addCustomProperty("users", users).build();
-		}catch(InvalidAccessTokenException | JsonProcessingException e) {
+		}catch(RuntimeException | JsonProcessingException e) {
 			users = "Error: "+e.getMessage();
 			LOGGER.error("Error in fetching users. Error: "+e.getMessage(), e);
 			return getRequest().addMessage(users).build();
@@ -90,7 +82,7 @@ public class UserProfileController {
 			String userId = userService.deleteUser(user, accessToken);
 			message = "User with id, "+userId+" deleted successfully";
 			LOGGER.info(message);
-		}catch(InvalidAccessTokenException | MissingRequestParamException | InvalidRequestParamException | UserNotExistException e) {
+		}catch(RuntimeException e) {
 			message = "Error: "+e.getMessage();
 			LOGGER.error("Error in deleting user. Error: "+e.getMessage(), e);
 		}
@@ -98,12 +90,12 @@ public class UserProfileController {
 	}
 	
 	@RequestMapping(value = "/auth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, String> checkUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+	public Map<String, String> authenticateUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
 		String message = "";
 		try {
 			message = userService.authenticateUser(user, accessToken);
 			LOGGER.info(message);
-		}catch(InvalidAccessTokenException | MissingRequestParamException | InvalidRequestParamException | AuthenticationFailureException e) {
+		}catch(RuntimeException e) {
 			message = "Error: "+e.getMessage();
 			LOGGER.error("Error in authenticating user. Error: "+e.getMessage(), e);
 		}
@@ -111,18 +103,44 @@ public class UserProfileController {
 	}
 	
 	@RequestMapping(value = "/get", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Map<String, String> authenticateUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+	public Map<String, String> checkUser(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
 		String message = "";
 		try {
 			String userJson = userService.getUser(user, accessToken);
 			message = "User with id, "+user.getId()+" fetched successfully";
 			LOGGER.info(message);
 			return getRequest().addMessage(message).addCustomProperty("user", userJson).build();
-		}catch(InvalidAccessTokenException | MissingRequestParamException | UserNotExistException | JsonProcessingException e) {
+		}catch(RuntimeException | JsonProcessingException e) {
 			message = "Error: "+e.getMessage();
 			LOGGER.error("Error in fetching user with id, "+user.getId()+". Error: "+e.getMessage(), e);
 			return getRequest().addMessage(message).build();
 		}
+	}
+	
+	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> resetPassword(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+		String message = "";
+		try {
+			message = userService.resetPassword(user, accessToken);
+			LOGGER.info(message+"  for user" + user.getUserName());
+		} catch (JsonProcessingException | RuntimeException e) {
+			message = "Error: "+e.getMessage();
+			LOGGER.error("Error in resetting password for the user with id, "+user.getId()+". Error: "+e.getMessage(), e);
+		}
+		return getRequest().addMessage(message).build();
+	}
+	
+	@RequestMapping(value = "/forgotCredentials", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> forgotCredentials(@RequestHeader("X-Access-Token") String accessToken, @RequestBody User user) {
+		String message = "";
+		try {
+			message = userService.forgotUsernameOrPassword(user, accessToken);
+			LOGGER.info(message+"  for user" + user.getUserName());
+		} catch (JsonProcessingException | RuntimeException e) {
+			message = "Error: "+e.getMessage();
+			LOGGER.error("Error in retrieving credentials for the user with id, "+user.getId()+". Error: "+e.getMessage(), e);
+		}
+		return getRequest().addMessage(message).build();
 	}
 
 	private RequestUtils getRequest() {
