@@ -1,15 +1,14 @@
 package com.paddyseedexpert.utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import static com.paddyseedexpert.userprofile.constant.AppConstants.ERROR;
+import static com.paddyseedexpert.userprofile.constant.AppConstants.SUCCESS;
+import static com.paddyseedexpert.utils.DataUtils.getTimestamp;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestUtils {
-
-	private static final String TIMESTAMP_FORMAT = "HH:mm:ss.SSS dd-MM-yyyy zzz";
-	private static final String ERROR = "error";
-	private static final String SUCCESS = "success";
+	
 	private Map<String, String> requestMap;
 	
 	public RequestUtils() {
@@ -18,7 +17,7 @@ public class RequestUtils {
 	}
 	
 	public RequestUtils addTimestamp() {
-		this.requestMap.put("timestamp", new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Date()));
+		this.requestMap.put("timestamp", getTimestamp());
 		return this;
 	}
 	
