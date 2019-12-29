@@ -16,9 +16,9 @@ spring:
         use_sql_comments: true
         format_sql: true
   datasource:
-    url: jdbc:mysql://db4free.net:3306/paddyseedexpert?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
-    username: gotham25
-    password: Gotham@25
+    url: ${MYSQL_DATASOURCE_URL}
+    username: ${MYSQL_DATASOURCE_USERNAME}
+    password: ${MYSQL_DATASOURCE_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
 
 # log4j:
