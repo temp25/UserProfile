@@ -14,12 +14,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: chmod +x gradlew && ./gradlew build
-    - name: Zip build folder
-      run: zip -v -T -r -9 build.zip build
-    - name: GitHub Releases
-      uses: fnkr/github-action-ghr@v1.2
-      env:
-        GHR_COMPRESS: xz
-        GHR_PATH: build/
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: chmod +x gradlew && ./gradlew clean build createPom
+    - name: View POM file
+      run: cat pom.xml
