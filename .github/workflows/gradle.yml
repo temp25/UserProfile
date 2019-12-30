@@ -17,8 +17,9 @@ jobs:
       run: chmod +x gradlew && ./gradlew build
     - name: Zip build folder
       run: zip -v -T -r -9 build.zip build
-    - name: GH Release
-      uses: softprops/action-gh-release@v0.1.0
-      with:
-            # Comma-delimited list of path globs for asset files to upload
-            files: build.zip
+    - name: GitHub Releases
+      uses: fnkr/github-action-ghr@v1.2
+      env:
+        GHR_COMPRESS: xz
+        GHR_PATH: build/
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
