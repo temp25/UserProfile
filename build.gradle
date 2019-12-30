@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
+	id 'maven'
 }
 
 group = 'com.paddyseedexpert'
@@ -35,4 +36,23 @@ task runJar(type: JavaExec) {
 	description = "Runs the assembled jar as a java application in command line"
 	main = "-jar"
 	args jar.archivePath
+}
+
+task createPom  {
+    pom {
+        project {
+            groupId 'com.paddyseedexpert'
+            artifactId 'userprofile'
+            version '1.0.0-SNAPSHOT'
+
+            inceptionYear '2008'
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+    }.writeTo("pom.xml")
 }
