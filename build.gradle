@@ -2,9 +2,10 @@ plugins {
 	id 'org.springframework.boot' version '2.2.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
-	id 'war'
+//	id 'war'
 	id 'eclipse'
 	id 'maven'
+        id 'com.google.cloud.tools.jib' version '1.8.0'
 }
 
 group = 'com.paddyseedexpert'
@@ -22,7 +23,7 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'com.github.gotham25:TurboSMTP:1.0.0-RELEASE'
 	runtimeOnly 'mysql:mysql-connector-java'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -55,4 +56,14 @@ task createPom  {
             }
         }
     }.writeTo("pom.xml")
+}
+
+jib {
+    to {
+       image = '2467027/user-test'
+       auth {
+          username = '2467027'
+          password = '2b033451-c5ea-4068-96d2-bac7bc463a99'
+       }
+    }
 }
