@@ -1,5 +1,6 @@
 FROM openjdk:8-jdk-alpine AS build
 LABEL maintainer="Natanael Copa <ncopa@alpinelinux.org>"
+RUN apk add --update busybox-suid
 WORKDIR /workspace/app
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
 USER gowtham
@@ -19,6 +20,7 @@ RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM openjdk:8-jre-alpine
 LABEL maintainer="Natanael Copa <ncopa@alpinelinux.org>"
+RUN apk add --update busybox-suid
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
 USER gowtham
 RUN su chown -R gowtham:gowtham /app
