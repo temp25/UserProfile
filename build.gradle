@@ -5,12 +5,20 @@ plugins {
 //	id 'war'
 	id 'eclipse'
 	id 'maven'
-        id 'com.google.cloud.tools.jib' version '1.8.0'
+	id 'com.google.cloud.tools.jib' version '1.8.0'
+	id 'com.bmuschko.docker-spring-boot-application' version '6.1.1'
 }
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import java.util.concurrent.Callable
+/*import com.bmuschko.gradle.docker.tasks.image.Dockerfile.From
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile.Instruction
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile.FromInstruction*/
 
 group = 'com.paddyseedexpert'
 version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '1.8'
+ext.mainClassName = 'com.paddyseedexpert.userprofile.UserProfileApplication'
 
 repositories {
 	mavenCentral()
@@ -66,4 +74,43 @@ jib {
           password = '2b033451-c5ea-4068-96d2-bac7bc463a99'
        }
     }
+}
+
+task createDockerfile(type: Dockerfile) {
+	description 'Generate docker file for the application'
+	from(project.provider(new Callable() {
+         @Override
+         Dockerfile.From call() throws Exception {
+             new Dockerfile.From('openjdk:8-jdk-alpine').withStage('build')
+         }
+     }))
+    label(['maintainer': 'Natanael Copa <ncopa@alpinelinux.org>'])
+    workingDir('/workspace/app')
+    runCommand('addgroup -S gowtham && adduser -S gowtham -G gowtham')
+    user('gowtham')
+    runCommand('chown -R gowtham:gowtham /workspace/app')
+    instruction('\n')
+    copyFile('gradlew', '.')
+    copyFile('gradle', 'gradle')
+    copyFile('build.gradle', '.')
+    runCommand('./gradlew dependencies')
+    instruction('\n')
+    copyFile('src', 'src')
+    runCommand('./gradlew build unpack -x test')
+    runCommand('mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)')
+    instruction('\n')
+    from 'openjdk:8-jre-alpine'
+    label(['maintainer': 'Natanael Copa <ncopa@alpinelinux.org>'])
+    runCommand('addgroup -S gowtham && adduser -S gowtham -G gowtham')
+    user('gowtham')
+    runCommand('chown -R gowtham:gowtham /app')
+    volume('/tmp')
+    instruction('HEALTHCHECK --interval=5s --timeout=2s --retries=12 CMD curl --silent --fail localhost:8080/userProfileController/status || exit 1')
+    arg('DEPENDENCY=/workspace/app/build/dependency')
+    copyFile('--from=build ${DEPENDENCY}/BOOT-INF/lib', '/app/lib')
+    copyFile('--from=build ${DEPENDENCY}/META-INF', '/app/META-INF')
+    copyFile('--from=build ${DEPENDENCY}/BOOT-INF/classes', '/app')
+    entryPoint('java', '-cp', 'app:app/lib/*', mainClassName)
+    instruction('\n')
+    exposePort(8080)
 }
