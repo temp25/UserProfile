@@ -4,14 +4,13 @@ RUN apk add --update busybox-suid
 WORKDIR /workspace/app
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
 RUN chown -R gowtham:gowtham /workspace/app
-RUN chmod 755 gradlew
-USER gowtham
 
 
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
-RUN chmod +x gradlew
+RUN chmod 777 gradlew
+USER gowtham
 RUN ./gradlew dependencies
 
 
