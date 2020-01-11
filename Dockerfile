@@ -3,7 +3,7 @@ LABEL maintainer="Natanael Copa <ncopa@alpinelinux.org>"
 WORKDIR /workspace/app
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
 USER gowtham
-RUN chown -R gowtham:gowtham /workspace/app
+RUN sudo chown -R gowtham:gowtham /workspace/app
 
 
 COPY gradlew .
@@ -21,7 +21,7 @@ FROM openjdk:8-jre-alpine
 LABEL maintainer="Natanael Copa <ncopa@alpinelinux.org>"
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
 USER gowtham
-RUN chown -R gowtham:gowtham /app
+RUN sudo chown -R gowtham:gowtham /app
 VOLUME ["/tmp"]
 HEALTHCHECK --interval=5s --timeout=2s --retries=12 CMD curl --silent --fail localhost:8080/userProfileController/status || exit 1
 ARG DEPENDENCY=/workspace/app/build/dependency
