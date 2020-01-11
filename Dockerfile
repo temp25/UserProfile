@@ -9,7 +9,8 @@ USER gowtham
 
 COPY gradlew .
 COPY gradle gradle
-COPY build.gradle .
+COPY build.gradle
+RUN chmod +x gradlew
 RUN ./gradlew dependencies
 
 
