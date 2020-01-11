@@ -3,8 +3,8 @@ LABEL maintainer="Natanael Copa <ncopa@alpinelinux.org>"
 RUN apk add --update busybox-suid
 WORKDIR /workspace/app
 RUN addgroup -S gowtham && adduser -S gowtham -G gowtham
+RUN chown -R gowtham:gowtham /workspace/app
 USER gowtham
-RUN su -c 'chown -R gowtham:gowtham /workspace/app'
 
 
 COPY gradlew .
