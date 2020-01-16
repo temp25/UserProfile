@@ -37,6 +37,7 @@ dependencies {
 	implementation 'com.github.gotham25:TurboSMTP:1.0.1'
 	runtimeOnly 'mysql:mysql-connector-java'
 //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'io.logz.logback:logzio-logback-appender:1.0.24'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
