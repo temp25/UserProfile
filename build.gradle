@@ -25,13 +25,19 @@ repositories {
 	jcenter()
 }
 
+configurations.all { 
+    exclude group: "org.slf4j", module: "dfds"
+    exclude group: "dfas", module: "dfds"
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
-	implementation 'com.github.gotham25:TurboSMTP:1.0.0-RELEASE'
+	implementation 'com.github.gotham25:TurboSMTP:1.0.1'
 	runtimeOnly 'mysql:mysql-connector-java'
 //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'io.logz.logback:logzio-logback-appender:1.0.24'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -77,7 +83,9 @@ jib {
 }
 
 task createDockerfile(type: Dockerfile) {
-	description 'Generate docker file for the application'
+	
+    description 'Generate docker file for the application'
+
 	from(project.provider(new Callable() {
          @Override
          Dockerfile.From call() throws Exception {
@@ -85,32 +93,39 @@ task createDockerfile(type: Dockerfile) {
          }
      }))
     label(['maintainer': 'Natanael Copa <ncopa@alpinelinux.org>'])
+    runCommand('apk add --update busybox-suid')
     workingDir('/workspace/app')
     runCommand('addgroup -S gowtham && adduser -S gowtham -G gowtham')
-    user('gowtham')
-    runCommand('sudo chown -R gowtham:gowtham /workspace/app')
+    runCommand('chown -R gowtham:gowtham /workspace/app')
     instruction('\n')
+
     copyFile('gradlew', '.')
     copyFile('gradle', 'gradle')
     copyFile('build.gradle', '.')
+    runCommand('chmod 777 gradlew')
+    user('gowtham')
     runCommand('./gradlew dependencies')
     instruction('\n')
+
     copyFile('src', 'src')
-    runCommand('./gradlew build unpack -x test')
+    runCommand('./gradlew clean build -x test')
     runCommand('mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)')
     instruction('\n')
+
     from 'openjdk:8-jre-alpine'
     label(['maintainer': 'Natanael Copa <ncopa@alpinelinux.org>'])
+    runCommand('apk add --update busybox-suid')
     runCommand('addgroup -S gowtham && adduser -S gowtham -G gowtham')
     user('gowtham')
-    runCommand('sudo chown -R gowtham:gowtham /app')
     volume('/tmp')
-    instruction('HEALTHCHECK --interval=5s --timeout=2s --retries=12 CMD curl --silent --fail localhost:8080/userProfileController/status || exit 1')
+    instruction('HEALTHCHECK --interval=5s --timeout=2s --retries=12 CMD curl --silent --fail localhost:2573/userProfileController/status || exit 1')
     arg('DEPENDENCY=/workspace/app/build/dependency')
     copyFile('--from=build ${DEPENDENCY}/BOOT-INF/lib', '/app/lib')
     copyFile('--from=build ${DEPENDENCY}/META-INF', '/app/META-INF')
     copyFile('--from=build ${DEPENDENCY}/BOOT-INF/classes', '/app')
     entryPoint('java', '-cp', 'app:app/lib/*', mainClassName)
     instruction('\n')
-    exposePort(8080)
+
+    exposePort(2573)
+
 }
