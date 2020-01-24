@@ -15,6 +15,9 @@ public class AppConstants {
 	public static final String ERROR_CODE = "errorCode";
 	public static final String SUCCESS = "success";
 	public static final String TIMESTAMP_FORMAT = "HH:mm:ss.SSS dd-MM-yyyy zzz";
+	public static final String TABLE_NAME = "user_profile";
+	public static final String RESET_PASSWORD_COLUMN_NAME = "reset_password";
+	public static final String APP_URL = System.getenv("APP_URL");
 	
 	public static final String TURBO_SMTP_AUTH_USERNAME = System.getenv("TURBO_SMTP_AUTH_USERNAME");
 	public static final String TURBO_SMTP_AUTH_PASSWORD = System.getenv("TURBO_SMTP_AUTH_PASSWORD");
