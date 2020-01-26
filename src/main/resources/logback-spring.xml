@@ -2,6 +2,8 @@
 <configuration>
     <!-- Use shutdownHook so that we can close gracefully and finish the log drain -->
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    
+    <property name="LOG_FILE" value="logs/user_management.log" />
 
     <!-- Sends the logs with DEBUG level to logzio, an online cloud log management -->
     
@@ -53,11 +55,34 @@
     </appender>
 
     <!-- EOL -->
+    
+    
+    <!-- Sends the logs to file -->
+    
+    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>${LOG_FILE}</file>
+    	
+    	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    		<!-- daily rollover -->
+			<fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+			
+			<!-- keep 30 days' worth of history capped at 3GB total size -->
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>64MB</totalSizeCap>
+		</rollingPolicy>
+		
+		<encoder>
+			<pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+		</encoder>
+    </appender>
+    
+    <!-- EOL -->
 
     <root level="debug">
         <!-- <appender-ref ref="LogzioLogbackAppender"/> -->
         <!-- <appender-ref ref="LogDna" /> -->
         <appender-ref ref="ConsoleAppender"/>
+        <!-- <appender-ref ref="FileAppender"/> -->
     </root>
     
 </configuration>
