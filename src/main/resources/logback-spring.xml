@@ -59,14 +59,14 @@
     
     <!-- Sends the logs to file -->
     
-    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
     	<file>${LOG_FILE}</file>
     	
     	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-    		<!-- daily rollover -->
+    		daily rollover
 			<fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
 			
-			<!-- keep 30 days' worth of history capped at 3GB total size -->
+			keep 30 days' worth of history capped at 3GB total size
 			<maxHistory>30</maxHistory>
 			<totalSizeCap>64MB</totalSizeCap>
 		</rollingPolicy>
@@ -74,7 +74,7 @@
 		<encoder>
 			<pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
 		</encoder>
-    </appender>
+    </appender> -->
     
     <!-- EOL -->
 
