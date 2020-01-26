@@ -80,7 +80,7 @@
 
     <root level="debug">
         <!-- <appender-ref ref="LogzioLogbackAppender"/> -->
-        <!-- <appender-ref ref="LogDna" /> -->
+        <appender-ref ref="LogDna" />
         <appender-ref ref="ConsoleAppender"/>
         <!-- <appender-ref ref="FileAppender"/> -->
     </root>
