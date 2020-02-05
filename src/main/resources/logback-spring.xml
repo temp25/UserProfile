@@ -8,8 +8,8 @@
     <!-- Sends the logs with DEBUG level to logzio, an online cloud log management -->
     
     <appender name="LogzioLogbackAppender" class="io.logz.logback.LogzioLogbackAppender">
-        <token>lGuiwuJYYkirucAShAqNdGuMleOYqnHR</token>
-        <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+        <token>${LOGZ_IO_TOKEN:-testLogzIOToken}</token>
+        <logzioUrl>${LOGZ_IO_URL:-testLogzIOUrl}</logzioUrl>
         <logzioType>java-application</logzioType>
     </appender>
 
@@ -22,9 +22,9 @@
         <encoder>
             <pattern>[%thread] %msg%n</pattern>
         </encoder>
-        <appName>User Profile</appName>
-        <ingestKey>${INGESTION_KEY:-test}</ingestKey>
-        <ingestUrl>${INGESTION_URL:-test}</ingestUrl>
+        <appName>User Mangement</appName>
+        <ingestKey>${LOG_DNA_INGESTION_KEY:-testLogDNAIngestionKey}</ingestKey>
+        <ingestUrl>${LOG_DNA_INGESTION_URL:-testLogDNAIngestionUrl}</ingestUrl>
         <!-- <mdcFields>field1,field2</mdcFields>
         <mdcTypes>string,int</mdcTypes> -->
         <tags>dev</tags>
