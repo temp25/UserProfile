@@ -66,7 +66,7 @@ public class UserProfileController {
 		return getRequest().addMessage(message).build();
 	}
 	
-	@RequestMapping(value = "/fetch", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/fetch", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Map<String, String> getUsers(@RequestHeader("X-Access-Token") String accessToken) {
 		
@@ -156,7 +156,7 @@ public class UserProfileController {
 		return getRequest().addMessage(message).build();
 	}
 	
-	@RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
+	@RequestMapping(value = "/forgot_password", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public String forgotPassword(Model model, @RequestParam("userId") String userId, @RequestParam("resetPass") String resetPass) {
 		try{
 			User user = userService.forgotPasswordWeb(userId, resetPass);
@@ -170,7 +170,7 @@ public class UserProfileController {
 		return "forgot_or_reset_password";
 	}
 	
-	@RequestMapping(value = "/reset_password", method = RequestMethod.GET)
+	@RequestMapping(value = "/reset_password", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	public String resetPassword(Model model, @RequestParam("userId") String userId, @RequestParam("resetPass") String resetPass) {
 		try{
 			User user = userService.resetPasswordWeb(userId, resetPass);
@@ -184,7 +184,7 @@ public class UserProfileController {
 		return "forgot_or_reset_password";
 	}
 	
-	@RequestMapping(value = "/reset_status", method = RequestMethod.POST)
+	@RequestMapping(value = "/reset_status", method = RequestMethod.POST, produces = MediaType.TEXT_HTML_VALUE)
 	public String updatePassword(Model model, @ModelAttribute(value="user") User user) {
 		
 		try {
