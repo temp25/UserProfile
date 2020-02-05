@@ -7,11 +7,11 @@
 
     <!-- Sends the logs with DEBUG level to logzio, an online cloud log management -->
     
-    <!-- <appender name="LogzioLogbackAppender" class="io.logz.logback.LogzioLogbackAppender">
+    <appender name="LogzioLogbackAppender" class="io.logz.logback.LogzioLogbackAppender">
         <token>lGuiwuJYYkirucAShAqNdGuMleOYqnHR</token>
         <logzioUrl>https://listener.logz.io:8071</logzioUrl>
         <logzioType>java-application</logzioType>
-    </appender> -->
+    </appender>
 
     <!-- EOL -->
 
