@@ -35,7 +35,7 @@ dependencies {
     //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     
     //Added for logzio
-    //	implementation 'io.logz.logback:logzio-logback-appender:1.0.24'
+    implementation 'io.logz.logback:logzio-logback-appender:1.0.24'
 
     //Added for logDNA
     implementation 'net.zileo:logback-logdna:1.0.1'
