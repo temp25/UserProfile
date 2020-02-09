@@ -1,14 +1,20 @@
 package com.paddyseedexpert.userprofile.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -16,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import com.paddyseedexpert.userprofile.model.User;
 import com.paddyseedexpert.userprofile.service.UserService;
 import com.paddyseedexpert.utils.RequestUtils;
@@ -204,6 +213,33 @@ public class UserProfileController {
 		}
 		
 		return "reset_status";
+	}
+	
+	@RequestMapping(value = "/swagger", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+	public String swaggerDoc() {
+		return "swagger/swagger-ui";
+	}
+	
+	@RequestMapping(value = "/api", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Object swaggerApi() {
+		
+		try {
+			ClassPathResource classPathResource = new ClassPathResource("classpath:/static/swagger/swagger.json");
+			byte[] byteArraySwaggerFileContent = FileCopyUtils.copyToByteArray(classPathResource.getInputStream());
+			String swaggerFileContent = new String(byteArraySwaggerFileContent, StandardCharsets.UTF_8);
+			return new ObjectMapper().readTree(swaggerFileContent.substring(1));
+		} catch (IOException e) {
+			StringWriter stackTraceWriter=new StringWriter();
+			e.printStackTrace(new PrintWriter(stackTraceWriter));
+			return ImmutableMap.of(
+					"isError", "true",
+					"errorMessage", e.getMessage(),
+					"stackTrace", stackTraceWriter.toString()
+			);
+			
+		}
+		
 	}
 
 	private RequestUtils getRequest() {

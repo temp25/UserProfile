@@ -1,0 +1,890 @@
+﻿{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "http://user-management-ingress-user-management.apps.us-east-1.starter.openshift-online.com",
+      "description": "Development Server"
+    }
+  ],
+  "info": {
+    "description": "User management API for Paddyseedexpert application",
+    "version": "1.0.0",
+    "title": "User Management API",
+    "contact": {
+      "email": "gowtham25alaguraj@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "user-profile-controller",
+      "description": "User management using API calls"
+    }
+  ],
+  "paths": {
+    "/userProfileController/status": {
+      "get": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Status",
+        "description": "Gets status of application",
+        "operationId": "status",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/create": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Create user",
+        "description": "Creates the user for the given application",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to create user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/update": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Update user",
+        "description": "Update the user for the given application",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to update user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/fetch": {
+      "get": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Fetch users",
+        "description": "Fetch the users for the given application",
+        "operationId": "fetchUsers",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to fetch user entities",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FetchSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FetchErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/delete": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Delete user",
+        "description": "Delete the user for the given application",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to delete user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "delete",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/auth": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Authenticate user",
+        "description": "Authenticates the user for the given application",
+        "operationId": "authenticateUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to delete authenticate entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "authenticate",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in update operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/get": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Get user",
+        "description": "Gets the user for the given application",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to get specific user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "get",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/resetPassword": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Reset Password",
+        "description": "Resets the user password for the given application",
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to reset password for specific user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "reset",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/userProfileController/forgotCredentials": {
+      "post": {
+        "tags": [
+          "user-profile-controller"
+        ],
+        "summary": "Forgot Credentials",
+        "description": "Resets the user password for the user who forgot credentials for given application",
+        "operationId": "forgotCredentials",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Access-Token",
+            "description": "Access token to reset password for specific user entity",
+            "schema": {
+              "type": "string",
+              "pattern": "[A-Za-z0-9_-]{22}"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "description": "reset",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failure in create operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForgotErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Status": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "UP"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "28-01-2020 05:21:22.587 UTC"
+          }
+        }
+      },
+      "User": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "f1207421-8105-4c39-b0c3-b1730234b2ca"
+          },
+          "userName": {
+            "type": "string",
+            "example": "testUser"
+          },
+          "emailAddress": {
+            "type": "string",
+            "example": "testUser@gmail.com"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "9183654270"
+          },
+          "address": {
+            "type": "string",
+            "example": "test address"
+          },
+          "password": {
+            "type": "string",
+            "example": "testPassword@123"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": "testPassword@123"
+          },
+          "secureQuestion": {
+            "type": "string",
+            "example": "What is your favourite color ?"
+          },
+          "secureAnswer": {
+            "type": "string",
+            "example": "Red"
+          }
+        }
+      },
+      "CreateUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "userName",
+              "emailAddress",
+              "phoneNumber",
+              "address",
+              "password",
+              "confirmPassword",
+              "secureQuestion",
+              "secureAnswer"
+            ]
+          }
+        ]
+      },
+      "UpdateUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "userName",
+              "password",
+              "confirmPassword"
+            ]
+          }
+        ]
+      },
+      "CreateSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User created with id, b0cf0e38-0aa1-422c-a8c0-5769b08c633a"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "CreateErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User created with id, b0cf0e38-0aa1-422c-a8c0-5769b08c633a"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "UpdateSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User with id, f1207421-8105-4c39-b0c3-b1730234b2ca updated successfully"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "UpdateErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Error: User not exists for userName, testUser1"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "FetchSuccessResponse": {
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "28-01-2020 05:21:22.587 UTC"
+          }
+        }
+      },
+      "FetchErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Error: Json parse error"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "DeleteUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "userName"
+            ]
+          }
+        ]
+      },
+      "DeleteSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "UserUser with id, f1207421-8105-4c39-b0c3-b1730234b2ca deleted successfully"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "DeleteErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Error: User doesn't exists for the username, testUser"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "AuthenticateUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "userName",
+              "password"
+            ]
+          }
+        ]
+      },
+      "AuthenticateSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "d3251002-e603-4e28-a5ba-d7b34a2ea00e"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "AuthenticateErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Error: Username (or) Password specified is invalid"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "GetUser": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "id"
+            ]
+          }
+        ]
+      },
+      "GetSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User created with id, b0cf0e38-0aa1-422c-a8c0-5769b08c633a"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "GetErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "User created with id, b0cf0e38-0aa1-422c-a8c0-5769b08c633a"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "ResetPassword": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "id",
+              "userName",
+              "password"
+            ]
+          }
+        ]
+      },
+      "ResetSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Password reset successful..."
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "ResetErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Couldn't fetch User with given Username and Password"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      },
+      "ForgotPassword": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "required": [
+              "id",
+              "userName"
+            ]
+          }
+        ]
+      },
+      "ForgotSuccessResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Password retrieval successful..."
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "ForgotErrorResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Couldn't fetch user for the id, b0cf0e38-0aa1-422c-a8c0-5769b08c633a"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "08:41:04.389 26-01-2020 IST"
+          },
+          "isSuccess": {
+            "type": "string",
+            "example": "error"
+          }
+        }
+      }
+    }
+  }
+}
