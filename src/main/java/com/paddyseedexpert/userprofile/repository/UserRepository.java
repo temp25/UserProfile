@@ -19,7 +19,6 @@ public interface UserRepository extends CrudRepository<User, String> {
 	Long countByUserName(String userName);
 	Optional<User> findByUserName(String userName);
 	Optional<User> findByIdAndUserName(UUID id, String userName);
-	Optional<User> findByIdAndUserNameAndPassword(UUID id, String userName, String password);
 	Optional<User> findByUserNameAndResetPassword(String userName, String resetPassword);
 	Optional<User> findByEmailAddress(String emailAddress);
 	Optional<User> findById(UUID id);

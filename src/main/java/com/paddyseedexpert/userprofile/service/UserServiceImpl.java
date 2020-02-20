@@ -11,7 +11,6 @@ import static com.paddyseedexpert.userprofile.constant.AppConstants.RETRIEVE_ACC
 import static com.paddyseedexpert.userprofile.constant.AppConstants.TABLE_NAME;
 import static com.paddyseedexpert.userprofile.constant.AppConstants.UPDATE_ACCESS_TOKEN;
 import static com.paddyseedexpert.utils.AuthenticationUtils.decrypt;
-import static com.paddyseedexpert.utils.AuthenticationUtils.encrypt;
 import static com.paddyseedexpert.utils.DataUtils.getJSONString;
 import static com.paddyseedexpert.utils.DataUtils.getMailerErrorMessage;
 import static com.paddyseedexpert.utils.DataUtils.isBlank;
@@ -21,16 +20,8 @@ import static com.paddyseedexpert.utils.MailUtils.sendForgotUsernameMail;
 import static com.paddyseedexpert.utils.MailUtils.sendResetPasswordMail;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +38,6 @@ import com.paddyseedexpert.userprofile.exception.InvalidAccessTokenException;
 import com.paddyseedexpert.userprofile.exception.InvalidRequestParamException;
 import com.paddyseedexpert.userprofile.exception.MailSendException;
 import com.paddyseedexpert.userprofile.exception.MissingRequestParamException;
-import com.paddyseedexpert.userprofile.exception.PasswordEncryptionException;
 import com.paddyseedexpert.userprofile.exception.PasswordMismatchException;
 import com.paddyseedexpert.userprofile.exception.UserExistException;
 import com.paddyseedexpert.userprofile.exception.UserNotExistException;
@@ -238,7 +228,9 @@ public class UserServiceImpl implements UserService {
 		
 		if(optionalUser.isPresent()){
 			User fetchedUser = optionalUser.get();
-			if(fetchedUser.getPassword().equals(user.getPassword())){
+			String decryptedFetchedPassword = decrypt(fetchedUser.getPassword());
+			String decryptedUserPassword = decrypt(user.getPassword());
+			if(decryptedFetchedPassword.equals(decryptedUserPassword)){
 				return fetchedUser.getId().toString();
 			}else{
 				throw new AuthenticationFailureException("Username (or) Password specified is invalid");
@@ -310,29 +302,28 @@ public class UserServiceImpl implements UserService {
 			throw new InvalidRequestParamException("Username (or) Password request parameter specfied is blank (or) has only whitespace");
 		}
 		
-		try {
-			password = encrypt(password);
-		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-			String errorMessage = "Error occurred in encrypting password";
-			LOGGER.error(errorMessage, e);
-			throw new PasswordEncryptionException(errorMessage);
-		}
-		
-		Optional<User> optionalUser = userRepository.findByIdAndUserNameAndPassword(id, userName, password);
+		//Optional<User> optionalUser = userRepository.findByIdAndUserNameAndPassword(id, userName, password);
+		Optional<User> optionalUser = userRepository.findByIdAndUserName(id, userName);
 		
 		if(optionalUser.isPresent()) {
-			user = optionalUser.get();
-			String mailResponse = sendResetPasswordMail(user.getEmailAddress(), user.getUserName(), user.getResetPassword());
-			JsonNode response = stringToJSON(mailResponse);
-			
-			if(!mailResponse.contains(ERROR)) {
-				return "Password reset successful...";
-			} else {
-				throw new MailSendException(getMailerErrorMessage(response));
+			user = optionalUser.get();		
+			String decryptedFetchedPassword = decrypt(user.getPassword());
+			String decryptedUserPassword = decrypt(user.getPassword());
+			if(decryptedFetchedPassword.equals(decryptedUserPassword)){
+				String mailResponse = sendResetPasswordMail(user.getEmailAddress(), user.getUserName(), user.getResetPassword());
+				JsonNode response = stringToJSON(mailResponse);
+				
+				if(!mailResponse.contains(ERROR)) {
+					return "Password reset successful...";
+				} else {
+					throw new MailSendException(getMailerErrorMessage(response));
+				}
+			}else{
+				throw new AuthenticationFailureException("Username (or) Password specified is invalid");
 			}
 			
 		}else {
-			throw new AuthenticationFailureException("Couldn't fetch User with given Username and Password");
+			throw new AuthenticationFailureException("Couldn't fetch User with given Username");
 		}
 		
 	}
@@ -412,18 +403,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public int updatePassword(UUID userId, String password, String confirmPassword) {
-		
-		String encryptedPassword;
-		String encryptedConfirmPassword;
-		
-		try {
-			encryptedPassword = encrypt(password);
-			encryptedConfirmPassword = encrypt(confirmPassword);
-		} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		
+	public int updatePassword(UUID userId, String encryptedPassword, String encryptedConfirmPassword) {
 		return userRepository.updatePasswords(userId, encryptedPassword, encryptedConfirmPassword, getResetPassword());
 	}
 
@@ -436,7 +416,7 @@ public class UserServiceImpl implements UserService {
 			Optional<User> optionalUser = userRepository.findByUserNameAndResetPassword(userName, resetPassword);
 			user = optionalUser.orElseThrow(UserNotExistException::new);
 			user.setPassword(decrypt(user.getPassword()));
-		} catch(RuntimeException | InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e){
+		} catch(RuntimeException e){
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		

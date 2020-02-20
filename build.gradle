@@ -33,6 +33,10 @@ dependencies {
 	implementation 'com.github.gotham25:TurboSMTP:1.0.1'
 	runtimeOnly 'mysql:mysql-connector-java'
     //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    //For encryption/decryption
+    implementation 'com.google.guava:guava:28.2-android'
+    implementation 'org.jasypt:jasypt:1.9.3'
     
     //Added for logzio
     implementation 'io.logz.logback:logzio-logback-appender:1.0.24'
