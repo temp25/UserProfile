@@ -55,10 +55,10 @@ public class User implements Serializable {
 	@Column(name = "ADDRESS")
 	private String address;
 	
-	@Column(name = "PASSWORD")
+	@Column(name = "PASSWORD", columnDefinition = "TEXT")
 	private String password;
 	
-	@Column(name = "CONFIRM_PASSWORD")
+	@Column(name = "CONFIRM_PASSWORD", columnDefinition = "TEXT")
 	private String confirmPassword;
 	
 	@Column(name = "RESET_PASSWORD")

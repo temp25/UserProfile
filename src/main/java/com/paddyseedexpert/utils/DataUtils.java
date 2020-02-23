@@ -60,8 +60,8 @@ public class DataUtils {
 		return emailBody.toString();
 	}
 
-	public static String getTimestamp() {
-		return new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Date());
+	public static long getTimestamp() {
+		return System.currentTimeMillis();//new SimpleDateFormat(TIMESTAMP_FORMAT).format(new Date());
 	}
 
 }
