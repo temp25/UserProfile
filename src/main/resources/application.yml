@@ -6,7 +6,7 @@ spring:
     ansi:
       enabled: always
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: create-drop
     generate-ddl: true
     show-sql: true
     properties:
