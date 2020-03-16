@@ -9,9 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Docker Build & Push
       - uses: actions/checkout@v1
-      - uses: mr-smithers-excellent/docker-build-push@v2
+      - name: Docker Build & Push
+        uses: mr-smithers-excellent/docker-build-push@v2
         with:
           image: 2467027/user-profile
           tag: ${GITHUB_REF##*/}
