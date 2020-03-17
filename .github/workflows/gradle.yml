@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Docker Build & Push
+      - name: Build and Test
+        run: chmod +x gradlew && ./gradlew clean build test && ./gradlew clean
+      - name: Build & Push to DockerHub
         uses: mr-smithers-excellent/docker-build-push@v2
         with:
           image: 2467027/user-profile
